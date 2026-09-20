@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MADAD — Pakistan Emergency Directory</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#e53935',
+                            redHover: '#d32f2f',
+                            redLight: '#fef2f2',
+                            darkBg: '#070e17',
+                            darkCard: '#0f172a',
+                            darkBorder: '#1e293b',
+                            lightBg: '#f4f6f8',
+                            lightCard: '#ffffff',
+                            lightBorder: '#e2e8f0',
+                            navyTag: '#1e293b',
+                            amberBg: '#fff7ed',
+                            amberText: '#b45309',
+                            amberBorder: '#fef3c7',
+                            greenBg: '#ecfdf5',
+                            greenText: '#047857',
+                            greenBorder: '#a7f3d0'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        urdu: ['Noto Nastaliq Urdu', 'Noto Sans Arabic', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome Icons & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6f8;
+            color: #0f172a;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dark body {
+            background-color: #070e17;
+            color: #f8fafc;
+        }
+
+        .modal-backdrop {
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .pulse-ring {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% {
+                transform: scale(0.95);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scale(0.95);
+                opacity: 1;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-red selection:text-white">
+
+    <!-- Top Warning Banner -->
+    <div id="topBanner"
+        class="bg-[#120305] text-slate-200 border-b border-red-950/60 px-4 py-2 text-xs md:text-sm font-medium">
+        <div class="max-w-7xl mx-auto flex items-center justify-center gap-2 text-center">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-red inline-block pulse-ring flex-shrink-0"></span>
+            <span id="bannerText">
+                <strong class="text-brand-red font-bold">Important:</strong>
+                MADAD is an independent directory. It is not a government website and cannot dispatch help — call the
+                number shown directly.
+            </span>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header
+        class="bg-white dark:bg-brand-darkCard border-b border-slate-200 dark:border-brand-darkBorder sticky top-0 z-40 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+
+                <!-- Logo Brand -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <!-- Image Tag -->
+                    <img src="logo.svg" alt="MADAD Logo"
+                        class="w-11 h-11 object-contain flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+
+                    <div>
+                        <div class="text-xl font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                            MADAD
+                        </div>
+                        <div
+                            class="text-[9px] font-black tracking-[0.25em] text-slate-400 dark:text-slate-400 uppercase mt-1">
+                            PAKISTAN
+                        </div>
+                    </div>
+                </a>
+                <!-- Nav Links (Desktop) -->
+                <nav class="hidden lg:flex items-center gap-6 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                    <a href="#" onclick="goHome()" class="hover:text-brandnavHome">
+                        Home
+                    </a> <a href="#directory" class="hover:text-brand-red transition-colors" id="navServices">Emergency
+                        Services</a>
+                    <a href="#directory" onclick="filterByCategory('Private Hospitals')"
+                        class="hover:text-brand-red transition-colors" id="navHospitals">Private Hospitals</a>
+                    <a href="#directory" onclick="filterByCategory('Private / NGO Ambulance')"
+                        class="hover:text-brand-red transition-colors" id="navNGO">NGO Responders</a>
+                    <a href="#howItWorks" class="hover:text-brand-red transition-colors" id="navHow">How It Works</a>
+                    <a href="#about" class="hover:text-brand-red transition-colors"
+                        id="navVerification">Verification</a>
+                    <a href="#contact" class="hover:text-brand-red transition-colors" id="navContact">Contact</a>
+                </nav>
+
+                <!-- Right Utility Tools -->
+                <div class="flex items-center gap-2">
+
+                    <!-- Info 'i' Button -->
+                    <button onclick="toggleInfoModal()" title="Platform Info"
+                        class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-brand-red flex items-center justify-center text-xs transition-colors border border-slate-200 dark:border-slate-700">
+                        <i class="fa-solid fa-info font-black"></i>
+                    </button>
+
+                    <!-- Language Selector Pill (Matching Screenshot) -->
+                    <div
+                        class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 flex items-center text-[11px] font-bold">
+                        <button id="btn-en" onclick="setLang('en')"
+                            class="px-2.5 py-0.5 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all">EN</button>
+                        <button id="btn-ur" onclick="setLang('ur')"
+                            class="px-2.5 py-0.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all font-urdu">اردو</button>
+                        <button id="btn-sd" onclick="setLang('sd')"
+                            class="px-2.5 py-0.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">سنڌي</button>
+                    </div>
+
+                    <!-- Theme Toggle Button -->
+                    <button onclick="toggleTheme()" title="Toggle Theme"
+                        class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-brand-red flex items-center justify-center text-xs transition-colors border border-slate-200 dark:border-slate-700">
+                        <i class="fa-solid fa-moon dark:hidden"></i>
+                        <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section
+        class="py-10 md:py-14 px-4 border-b border-slate-200 dark:border-brand-darkBorder bg-slate-100/60 dark:bg-brand-darkBg transition-colors">
+        <div class="max-w-4xl mx-auto text-center">
+
+            <!-- Verified Directory Badge -->
+            <div
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 dark:bg-red-950/40 border border-brand-red/30 text-brand-red text-[10px] font-extrabold tracking-wider uppercase mb-4">
+                <i class="fa-solid fa-circle-info"></i>
+                <span id="badgeVerified">VERIFIED EMERGENCY DIRECTORY</span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
+                MADAD
+            </h1>
+
+            <!-- Slogan & Subtext -->
+            <h2 id="heroSlogan" class="text-lg md:text-2xl font-black text-brand-red mb-1 tracking-wide">
+                Find the Right Help, When It Matters Most.
+            </h2>
+            <p id="heroSubtext" class="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400 mb-8">
+                Verified emergency information from official sources.
+            </p>
+
+            <!-- Search Bar -->
+            <div class="relative max-w-2xl mx-auto mb-6">
+                <input type="text" id="searchInput" onkeyup="applyFilters()"
+                    placeholder="Search Police, Rescue 1122, Edhi, Hospitals, Fire Brigade..."
+                    class="w-full pl-4 pr-28 py-3.5 bg-white dark:bg-brand-darkCard border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-red text-xs md:text-sm transition-all shadow-sm">
+
+                <button onclick="applyFilters()"
+                    class="absolute right-1.5 top-1.5 bottom-1.5 bg-brand-red hover:bg-brand-redHover text-white font-black px-5 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    <span id="btnSearch">SEARCH</span>
+                </button>
+            </div>
+
+            <!-- Filter Panel Box -->
+            <div
+                class="bg-white dark:bg-brand-darkCard border border-slate-200 dark:border-brand-darkBorder p-4 md:p-5 rounded-2xl shadow-sm text-left backdrop-blur-sm max-w-4xl mx-auto transition-colors">
+                <div class="flex items-center justify-between mb-3">
+                    <span id="lblFilterHeading" class="text-[10px] font-black tracking-widest uppercase text-slate-400">
+                        FILTER BY LOCATION
+                    </span>
+                    <button onclick="resetFilters()" id="btnReset"
+                        class="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-brand-red transition-colors flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-right text-[10px]"></i>
+                        <span>Reset Filters</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <!-- Province Filter -->
+                    <select id="provinceSelect" onchange="onProvinceChange()"
+                        class="bg-slate-50 dark:bg-brand-darkBg border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brand-red transition-colors cursor-pointer">
+                        <option value="" id="optAllProv">All Provinces / Territories</option>
+                        <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Sindh">Sindh</option>
+                        <option value="Islamabad Capital Territory">Islamabad Capital Territory</option>
+                        <option value="Balochistan">Balochistan</option>
+                    </select>
+
+                    <!-- City Filter -->
+                    <select id="citySelect" onchange="applyFilters()"
+                        class="bg-slate-50 dark:bg-brand-darkBg border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brand-red transition-colors cursor-pointer"
+                        disabled>
+                        <option value="" id="optSelectCity">Select City</option>
+                    </select>
+
+                    <!-- Category Filter -->
+                    <select id="categorySelect" onchange="applyFilters()"
+                        class="bg-slate-50 dark:bg-brand-darkBg border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brand-red transition-colors cursor-pointer">
+                        <option value="" id="optAllCat">All Categories</option>
+                        <option value="Police">Police</option>
+                        <option value="Ambulance / Rescue">Ambulance / Rescue</option>
+                        <option value="Fire Brigade">Fire Brigade</option>
+                        <option value="Government Hospitals">Government Hospitals</option>
+                        <option value="Private Hospitals">Private Hospitals</option>
+                        <option value="Private / NGO Ambulance">Private / NGO Ambulance</option>
+                        <option value="Blood Banks">Blood Banks</option>
+                        <option value="Disaster Relief">Disaster Relief</option>
+                        <option value="Women & Child Protection">Women & Child Protection</option>
+                        <option value="Electricity Emergency">Electricity Emergency</option>
+                        <option value="Gas Emergency">Gas Emergency</option>
+                        <option value="Road / Traffic Emergency">Road / Traffic Emergency</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- Not Sure Who To Call Banner -->
+    <section class="px-4 py-6">
+        <div class="max-w-5xl mx-auto">
+            <div
+                class="bg-slate-900 dark:bg-brand-darkCard border border-slate-800 dark:border-brand-darkBorder rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                <div class="text-center md:text-left">
+                    <h3 class="text-lg md:text-xl font-black text-white mb-1">Not sure who to call?</h3>
+                    <p class="text-xs md:text-sm text-slate-300 max-w-md">
+                        Answer a few simple questions and MADAD will point you to the right emergency service — no
+                        medical diagnosis, just direction.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 flex-shrink-0">
+                    <button onclick="openAssistModal('direct')"
+                        class="bg-white text-slate-900 font-black text-xs md:text-sm px-5 py-3 rounded-xl shadow-md hover:bg-slate-100 transition-colors flex items-center gap-2">
+                        <span>🆘</span><span>I need help</span>
+                    </button>
+                    <button onclick="openAssistModal('guided')"
+                        class="bg-transparent border border-slate-600 text-white font-bold text-xs md:text-sm px-5 py-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-2">
+                        <span>❓</span><span>I don't know who to call</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Directory Services Grid -->
+    <section id="directory" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        <div class="flex items-center justify-between mb-6">
+            <h2 id="headingDirectory" class="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                Emergency Services Directory
+            </h2>
+            <span id="resultCounter"
+                class="bg-slate-200 dark:bg-brand-darkCard border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold px-3 py-1 rounded-full text-xs">
+                0 Available
+            </span>
+        </div>
+
+        <!-- Directory Grid -->
+        <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Dynamic Cards Injected via JS -->
+        </div>
+    </section>
+
+    <!-- How MADAD Works Section -->
+    <section id="howItWorks"
+        class="bg-slate-200/50 dark:bg-brand-darkBg border-t border-slate-200 dark:border-brand-darkBorder py-12 px-4 transition-colors">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-10">
+                <span class="text-[10px] font-black tracking-widest text-brand-red uppercase mb-1 block">PROCESS</span>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">How MADAD Works</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Three steps between you and the right emergency
+                    contact.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Step 1 -->
+                <div
+                    class="bg-white dark:bg-brand-darkCard p-6 rounded-2xl border border-slate-200 dark:border-brand-darkBorder relative shadow-sm">
+                    <div class="text-3xl font-black text-brand-red mb-3">01</div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1">Choose</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Pick the type of emergency — police, medical, fire, disaster, or another essential service.
+                    </p>
+                    <span
+                        class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md inline-block">Step
+                        1: Select Category</span>
+                </div>
+
+                <!-- Step 2 -->
+                <div
+                    class="bg-white dark:bg-brand-darkCard p-6 rounded-2xl border border-slate-200 dark:border-brand-darkBorder relative shadow-sm">
+                    <div class="text-3xl font-black text-brand-red mb-3">02</div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1">Locate</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Select your province, city and area so MADAD can narrow results to your location.
+                    </p>
+                    <span
+                        class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md inline-block">Step
+                        2: Filter Region</span>
+                </div>
+
+                <!-- Step 3 -->
+                <div
+                    class="bg-white dark:bg-brand-darkCard p-6 rounded-2xl border border-slate-200 dark:border-brand-darkBorder relative shadow-sm">
+                    <div class="text-3xl font-black text-brand-red mb-3">03</div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1">Contact</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Check the source, tap Details if you need more, then call the verified number directly.
+                    </p>
+                    <span
+                        class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md inline-block">Step
+                        3: Direct Connect</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Our Platform Section -->
+    <section id="about"
+        class="bg-white dark:bg-brand-darkCard border-t border-slate-200 dark:border-brand-darkBorder py-12 px-4 transition-colors">
+        <div class="max-w-4xl mx-auto text-center">
+
+            <span class="text-[10px] font-black tracking-widest text-brand-red uppercase mb-1 block"
+                id="lblAboutPlatform">
+                ABOUT OUR PLATFORM
+            </span>
+            <h2 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-3" id="headingServing">
+                Serving Citizens Nationwide
+            </h2>
+            <p class="text-slate-600 dark:text-slate-300 text-xs md:text-sm leading-relaxed mb-8 max-w-3xl mx-auto"
+                id="txtAboutDesc">
+                MADAD is a community-first civic initiative created to bridge the gap between citizens in distress and
+                verified response hotlines, by centralising government, private and NGO emergency contacts across
+                Pakistan into one fast, mobile-friendly directory.
+            </p>
+
+            <!-- Mandatory Compact Disclaimer Box -->
+            <div
+                class="bg-red-50 dark:bg-[#18080a] border border-red-200 dark:border-red-950 rounded-2xl p-5 text-left mb-8 shadow-sm relative overflow-hidden transition-colors">
+                <h3
+                    class="text-sm md:text-base font-black text-brand-red uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>MADAD IS NOT A GOVERNMENT WEBSITE</span>
+                </h3>
+
+                <ul class="space-y-1.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
+                    <li class="flex items-start gap-2">
+                        <span class="text-brand-red font-bold">•</span>
+                        <span>MADAD is <strong>not</strong> run, funded by, or affiliated with the Government of
+                            Pakistan or any provincial government.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-brand-red font-bold">•</span>
+                        <span>MADAD is <strong>not</strong> an emergency dispatch centre — it cannot send police,
+                            ambulance or rescue teams. It only displays the number to call.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-brand-red font-bold">•</span>
+                        <span>In immediate danger, <strong class="text-brand-red">call the number directly.</strong>
+                            Don't wait for a reply from this website, and don't submit a "Report" form instead of
+                            calling.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-brand-red font-bold">•</span>
+                        <span>Private hospitals and NGO-run ambulance services (e.g. Edhi, Chhipa) are included for
+                            public convenience — they are independent organisations, not government services.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Counter Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div
+                    class="bg-slate-50 dark:bg-brand-darkBg border border-slate-200 dark:border-slate-800 p-4 rounded-2xl text-center">
+                    <div id="statTotal" class="text-3xl font-black text-brand-red mb-0.5">22</div>
+                    <div class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        CONTACTS LISTED</div>
+                </div>
+
+                <div
+                    class="bg-slate-50 dark:bg-brand-darkBg border border-slate-200 dark:border-slate-800 p-4 rounded-2xl text-center">
+                    <div class="text-3xl font-black text-brand-red mb-0.5">18</div>
+                    <div class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        OFFICIALLY VERIFIED</div>
+                </div>
+
+                <div
+                    class="bg-slate-50 dark:bg-brand-darkBg border border-slate-200 dark:border-slate-800 p-4 rounded-2xl text-center">
+                    <div class="text-3xl font-black text-brand-red mb-0.5">5</div>
+                    <div class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        CITIES COVERED</div>
+                </div>
+
+                <div
+                    class="bg-slate-50 dark:bg-brand-darkBg border border-slate-200 dark:border-slate-800 p-4 rounded-2xl text-center">
+                    <div class="text-3xl font-black text-brand-red mb-0.5">5</div>
+                    <div class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        PROVINCES & CAPITAL</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- FAQ Section -->
+    <section id="faq"
+        class="bg-slate-100 dark:bg-brand-darkBg border-t border-slate-200 dark:border-brand-darkBorder py-12 px-4">
+
+        <div class="max-w-4xl mx-auto">
+
+            <div class="text-center mb-8">
+                <span class="text-brand-red font-black tracking-widest text-xs">
+                    FAQ
+                </span>
+
+                <h2 class="text-3xl font-black text-slate-900 dark:text-white mt-2">
+                    Frequently Asked Questions
+                </h2>
+            </div>
+
+            <div class="space-y-4">
+
+                <details class="bg-white dark:bg-brand-darkCard rounded-2xl p-5">
+                    <summary class="font-bold cursor-pointer">
+                        Is MADAD a government website?
+                    </summary>
+                    <p class="mt-3 text-slate-500">
+                        No. MADAD is an independent public directory.
+                    </p>
+                </details>
+
+                <details class="bg-white dark:bg-brand-darkCard rounded-2xl p-5">
+                    <summary class="font-bold cursor-pointer">
+                        Can MADAD dispatch emergency services?
+                    </summary>
+                    <p class="mt-3 text-slate-500">
+                        No. MADAD only provides emergency contact information.
+                    </p>
+                </details>
+
+                <details class="bg-white dark:bg-brand-darkCard rounded-2xl p-5">
+                    <summary class="font-bold cursor-pointer">
+                        How do I report an incorrect number?
+                    </summary>
+                    <p class="mt-3 text-slate-500">
+                        Use the "Report Incorrect Number" button on any service card.
+                    </p>
+                </details>
+
+            </div>
+
+        </div>
+
+    </section>
+    <!-- Contact Section - Coming Soon -->
+    <section id="contact"
+        class="bg-white dark:bg-brand-darkCard border-t border-slate-200 dark:border-brand-darkBorder py-16 px-4 text-center">
+        <div class="max-w-xl mx-auto">
+
+            <!-- Badge -->
+            <span
+                class="inline-block bg-brand-red/10 text-brand-red font-extrabold tracking-widest text-[11px] px-3.5 py-1.5 rounded-full mb-3 uppercase">
+                Coming Soon
+            </span>
+
+            <!-- Heading -->
+            <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-3">
+                Get In Touch
+            </h2>
+
+            <!-- Description -->
+            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                Our direct contact and messaging form is currently under development. It will be available very soon to
+                assist you better!
+            </p>
+
+            <!-- Optional Support Email Tag -->
+            <div
+                class="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 px-4 py-2.5 rounded-xl shadow-sm">
+                <i class="fa-solid fa-envelope text-brand-red text-sm"></i>
+                <span>afzaislamkz@gmail.com</span>
+            </div>
+
+        </div>
+    </section>
+    <!-- Comprehensive Footer -->
+    <footer
+        class="bg-slate-100 dark:bg-brand-darkBg border-t border-slate-200 dark:border-brand-darkBorder pt-10 pb-8 text-slate-500 dark:text-slate-400 text-xs transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Grid Sections -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <a href="#" class="flex items-center gap-2 mb-3">
+
+                        <a href="#" class="flex items-center gap-2 mb-3">
+                            <!-- SVG Logo Image -->
+                            <img src="logo.svg" alt="MADAD Logo" class="h-8 w-auto object-contain">
+
+                            <!-- Text (Agar logo ke sath text bhi rakhna hai, warna is line ko delete kar dein) -->
+                            <span
+                                class="text-base font-black text-slate-900 dark:text-white tracking-wider">MADAD</span>
+                        </a> </a>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
+                        Pakistan's consolidated public emergency information directory. Built to save time during
+                        crises.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-[11px] font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                        EMERGENCY SERVICES
+                    </h4>
+                    <ul class="space-y-1.5 text-xs">
+                        <li><a href="#directory" onclick="
+                        ByCategory('Police')" class="hover:text-brand-red transition-colors">Police Helplines (15)</a>
+                        </li>
+                        <li><a href="#directory" onclick="filterByCategory('Ambulance / Rescue')"
+                                class="hover:text-brand-red transition-colors">Rescue 1122</a></li>
+                        <li><a href="#directory" onclick="filterByCategory('Fire Brigade')"
+                                class="hover:text-brand-red transition-colors">Fire Department (16)</a></li>
+                        <li><a href="#directory" onclick="filterByCategory('Blood Banks')"
+                                class="hover:text-brand-red transition-colors">Blood Banks (Sundas & Fatimid)</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-[11px] font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                        PROVINCES COVERED
+                    </h4>
+                    <ul class="space-y-1.5 text-xs">
+                        <li><a href="#directory" onclick="filterByProvince('Khyber Pakhtunkhwa')"
+                                class="hover:text-brand-red transition-colors">Khyber Pakhtunkhwa</a></li>
+                        <li><a href="#directory" onclick="filterByProvince('Punjab')"
+                                class="hover:text-brand-red transition-colors">Punjab</a></li>
+                        <li><a href="#directory" onclick="filterByProvince('Sindh')"
+                                class="hover:text-brand-red transition-colors">Sindh</a></li>
+                        <li><a href="#directory" onclick="filterByProvince('Islamabad Capital Territory')"
+                                class="hover:text-brand-red transition-colors">Islamabad Capital Territory</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-[11px] font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                        LEGAL DISCLAIMER
+                    </h4>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">
+                        MADAD is an independent public directory. It does not dispatch emergency services. Please
+                        contact official helplines directly.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Footer Memorial Section (Copyright se Uper) -->
+            <div class="pt-6 border-t border-slate-200 dark:border-slate-800 text-center pb-4">
+                <div
+                    class="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-slate-200/50 dark:bg-slate-800/60 border border-slate-300/50 dark:border-slate-700/50">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                        Dedicated in loving memory of my sister(bebo) — <span
+                            class="italic text-slate-500 dark:text-slate-400">May her memory continue to serve and help
+                            others.</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Copyright & Creator Credit -->
+            <div
+                class="pt-4 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+                <p>© 2026 MADAD Pakistan — Developed for public convenience by Afza Khan.</p>
+                <div class="flex items-center gap-4 font-semibold">
+                    <a href="#about" class="hover:text-brand-red transition-colors">Privacy Notice</a>
+                    <span>•</span>
+                    <a href="#about" class="hover:text-brand-red transition-colors">Terms & Disclaimer</a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+    <!-- Exact Details Modal Popup (Screenshot Duplicate) -->
+    <div id="detailsModal"
+        class="fixed inset-0 bg-slate-950/75 modal-backdrop z-50 hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-[#0b1726] border border-slate-200 dark:border-[#1e2d42] rounded-2xl max-w-lg w-full p-6 shadow-2xl relative text-slate-900 dark:text-slate-100 transition-colors">
+
+            <!-- Close Button -->
+            <button onclick="closeDetailsModal()"
+                class="absolute top-4 right-4 text-slate-400 hover:text-brand-red text-base transition-colors w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Modal Card Header -->
+            <div class="flex items-start gap-3 mb-5 pr-6">
+                <div id="modalIcon"
+                    class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-brand-red text-lg flex-shrink-0">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h3 id="modalTitle" class="text-lg font-extrabold text-slate-900 dark:text-white leading-snug">
+                        KP Police — Emergency Response
+                    </h3>
+                    <p id="modalLocation" class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                        All Peshawar, Peshawar, Khyber Pakhtunkhwa
+                    </p>
+                </div>
+            </div>
+            <!-- Property Table -->
+            <div class="space-y-3 text-xs mb-6">
+
+                <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Classification</span>
+                    <span id="modalClassification" class="font-bold text-slate-900 dark:text-white">Emergency</span>
+                </div>
+
+                <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Operating hours</span>
+                    <span id="modalHours" class="font-bold text-slate-900 dark:text-white">24/7</span>
+                </div>
+
+                <div class="flex items-start justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium flex-shrink-0">Address</span>
+                    <span id="modalAddress"
+                        class="font-semibold text-slate-800 dark:text-slate-200 text-right ml-4">Central Police Office,
+                        Khyber Road, Peshawar</span>
+                </div>
+
+                <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Alternative number</span>
+                    <span id="modalAlt" class="font-mono font-bold text-slate-900 dark:text-white">091-9212222</span>
+                </div>
+
+                <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Sector</span>
+                    <span id="modalSector" class="font-bold text-slate-900 dark:text-white">Government</span>
+                </div>
+
+            </div>
+
+            <!-- Warning Callout Box in Modal -->
+            <div
+                class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-[11px] text-amber-600 dark:text-amber-400 font-medium mb-5">
+                For immediate danger, contact the appropriate emergency service directly rather than waiting to browse
+                details.
+            </div>
+
+            <!-- Modal Action Buttons -->
+            <div class="flex items-center gap-3">
+                <a id="modalCallBtn" href="tel:15"
+                    class="flex-grow bg-brand-red hover:bg-brand-redHover text-white font-black py-3 rounded-xl text-center text-xs tracking-wider uppercase transition-all shadow-md">
+                    Call 15
+                </a>
+                <button onclick="reportNumber()"
+                    class="text-slate-500 dark:text-slate-400 hover:text-brand-red text-xs font-semibold px-3 py-3 transition-colors">
+                    Report
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Guided Assistant Modal -->
+    <div id="assistModal" onclick="if(event.target===this) closeAssistModal()"
+        class="fixed inset-0 bg-slate-950/75 modal-backdrop z-50 hidden flex items-start justify-center p-4 pt-20 md:pt-24">
+        <div
+            class="bg-white dark:bg-brand-darkCard border border-slate-200 dark:border-brand-darkBorder rounded-2xl max-w-md w-full max-h-[80vh] overflow-hidden p-6 shadow-2xl relative text-slate-900 dark:text-white">
+            <button onclick="closeAssistModal()"
+                class="absolute top-4 right-4 text-slate-400 hover:text-brand-red text-base transition-colors w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="assistModalTitle" class="text-base font-extrabold mb-4 pr-6">What happened?</h3>
+            <div id="assistModalBody" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1"></div>
+        </div>
+    </div>
+
+    <!-- Info Guidance Modal -->
+    <div id="infoModal"
+        class="fixed inset-0 bg-slate-950/75 modal-backdrop z-50 hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-brand-darkCard border border-slate-200 dark:border-brand-darkBorder rounded-2xl max-w-2xl w-full p-6 md:p-8 shadow-2xl relative text-slate-900 dark:text-white">
+
+            <!-- Close Button -->
+            <button onclick="toggleInfoModal()"
+                class="absolute top-4 right-4 text-slate-400 hover:text-brand-red text-base transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Title with Red 'i' icon -->
+            <h3 class="text-lg font-bold mb-6 flex items-center gap-3">
+                <span class="bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-sm">
+                    <i class="fa-solid fa-info"></i>
+                </span>
+                How MADAD verifies information
+            </h3>
+
+            <!-- Content Container -->
+            <div class="space-y-5">
+
+                <!-- Verified Paragraph -->
+                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    <span
+                        class="inline-block bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-300 dark:border-green-700/50 text-xs px-2 py-0.5 rounded font-medium mr-1">Verified</span>
+                    — the number was checked against that organisation's own official website or a government portal,
+                    and the source is shown on the card.
+                </p>
+
+                <!-- Verification Needed Paragraph -->
+                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    <span
+                        class="inline-block bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border border-yellow-300 dark:border-yellow-700/50 text-xs px-2 py-0.5 rounded font-medium mr-1">Verification
+                        Needed</span>
+                    — the number is publicly and widely known, but MADAD hasn't yet confirmed it directly against a
+                    primary official source. It's still shown — MADAD never hides or invents numbers — but treat it with
+                    a little more caution, and use a search engine to double check if you have a moment and it's not
+                    urgent.
+                </p>
+
+                <!-- Alternative Number Paragraph -->
+                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    An alternative number is only shown if it came from the same verified official source as the primary
+                    number — MADAD does not add alternative numbers it can't confirm.
+                </p>
+
+                <!-- Final Bold Statement -->
+                <p class="text-sm text-slate-800 dark:text-white font-bold leading-relaxed pt-2">
+                    MADAD does not invent or guess numbers. If we can't confirm something, we say so clearly instead of
+                    hiding the gap.
+                </p>
+            </div>
+
+            <!-- Action Button (Aapka diya hua button complete kar diya hai) -->
+            <button onclick="toggleInfoModal()"
+                class="w-full mt-8 bg-brand-red hover:bg-brand-redHover text-white font-bold py-3 rounded-xl text-sm transition-colors">
+                Close / Understood
+            </button>
+
+        </div>
+    </div>
+
+    <script>
+        const ASSIST_OPTIONS = [
+            { label: "Someone is in danger", cat: "Police" },
+            { label: "Medical emergency", cat: "Ambulance / Rescue" },
+            { label: "Fire", cat: "Fire Brigade" },
+            { label: "Road accident", cat: "Road / Traffic Emergency" },
+            { label: "Flood / disaster", cat: "Disaster Relief" },
+            { label: "Need a hospital", cat: "Government Hospitals" },
+            { label: "Need police", cat: "Police" },
+            { label: "Need blood", cat: "Blood Banks" },
+            { label: "Electricity emergency", cat: "Electricity Emergency" },
+            { label: "Gas emergency", cat: "Gas Emergency" },
+            { label: "I don't know", cat: null }
+        ];
+
+        const GUIDED_QUESTIONS = [
+            { q: "Is someone injured?", cat: "Ambulance / Rescue" },
+            { q: "Is there immediate danger to someone right now?", cat: "Police" },
+            { q: "Is there a fire?", cat: "Fire Brigade" },
+            { q: "Is police assistance needed?", cat: "Police" },
+            { q: "Is a hospital needed?", cat: "Government Hospitals" },
+            { q: "Is this a natural disaster (flood, earthquake)?", cat: "Disaster Relief" }
+        ];
+
+        let guidedStep = 0;
+
+        function openAssistModal(mode) {
+            guidedStep = 0;
+            document.getElementById("assistModal").classList.remove("hidden");
+            mode === "direct" ? renderAssistOptions() : renderGuidedQuestion();
+        }
+
+        function closeAssistModal() {
+            document.getElementById("assistModal").classList.add("hidden");
+        }
+
+        function renderAssistOptions() {
+            document.getElementById("assistModalTitle").textContent = "What happened?";
+            document.getElementById("assistModalBody").innerHTML = ASSIST_OPTIONS.map(o =>
+                `<button onclick="pickAssistCategory('${o.cat ?? ''}')" class="w-full text-left bg-slate-50 dark:bg-brand-darkBg border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold hover:border-brand-red transition-colors">${o.label}</button>`
+            ).join('');
+        }
+
+        function renderGuidedQuestion() {
+            if (guidedStep >= GUIDED_QUESTIONS.length) { pickAssistCategory("Police"); return; }
+            const q = GUIDED_QUESTIONS[guidedStep];
+            document.getElementById("assistModalTitle").textContent = `Question ${guidedStep + 1} of ${GUIDED_QUESTIONS.length}`;
+            document.getElementById("assistModalBody").innerHTML = `
+        <p class="text-sm font-bold mb-3">${q.q}</p>
+        <div class="flex gap-3">
+            <button onclick="answerGuided(true)" class="flex-1 bg-brand-red text-white font-bold py-2.5 rounded-xl text-sm">Yes</button>
+            <button onclick="answerGuided(false)" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold py-2.5 rounded-xl text-sm">No</button>
+        </div>`;
+        }
+
+        function answerGuided(isYes) {
+            const q = GUIDED_QUESTIONS[guidedStep];
+            if (isYes) { pickAssistCategory(q.cat); }
+            else { guidedStep++; renderGuidedQuestion(); }
+        }
+
+        function pickAssistCategory(cat) {
+            const body = document.getElementById("assistModalBody");
+            document.getElementById("assistModalTitle").textContent = "Recommended service";
+            if (!cat) {
+                body.innerHTML = `
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">No problem — browse every emergency category and pick the closest match.</p>
+            <button onclick="closeAssistModal(); document.getElementById('directory').scrollIntoView({behavior:'smooth'});" class="w-full bg-brand-red text-white font-bold py-3 rounded-xl text-sm">Browse all services</button>`;
+                return;
+            }
+            const match = dataset.find(item => item.categoryFull === cat);
+            body.innerHTML = `
+        <p class="text-xs font-bold text-brand-greenText mb-2">Based on your answer</p>
+        <h4 class="text-base font-black mb-1">${cat}</h4>
+        ${match ? `<div class="text-3xl font-black text-slate-900 dark:text-white my-3">${match.phone}</div>` : ''}
+        <div class="flex gap-3 mt-4">
+            ${match ? `<a href="tel:${match.phone}" class="flex-1 bg-brand-red text-white font-bold py-2.5 rounded-xl text-sm text-center">Call ${match.phone}</a>` : ''}
+            <button onclick="closeAssistModal(); filterByCategory('${cat}'); document.getElementById('directory').scrollIntoView({behavior:'smooth'});" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold py-2.5 rounded-xl text-sm">View listings</button>
+        </div>`;
+        }
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAssistModal(); });
+
+        function submitContactForm() {
+
+            alert(
+                "Thank you for contacting MADAD. We will review your message."
+            );
+
+        }
+        // Official Verified Contacts Database
+        const dataset = [
+            {
+                id: 1,
+                name: "National Highways & Motorway Police",
+                category: "TRAFFIC",
+                categoryFull: "Road / Traffic Emergency",
+                type: "GOVERNMENT",
+                phone: "130",
+                location: "Motorway (M1/M2), Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Widely publicised national number — not yet confirmed against NH&MP's own site by MADAD",
+                verified: "Verification Needed",
+                status: "unverified",
+                classification: "Highway Emergency",
+                hours: "24/7",
+                address: "NHMP HQ, Sector G-11/1, Islamabad",
+                altPhone: "051-9234125",
+                sector: "Government"
+            },
+            {
+                id: 2,
+                name: "Pakistan Railways Enquiry & Emergency",
+                category: "TRAFFIC",
+                categoryFull: "Road / Traffic Emergency",
+                type: "GOVERNMENT",
+                phone: "117",
+                location: "Railway Station, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Commonly cited on district government listings — not yet confirmed on Pakistan Railways' own site",
+                verified: "Verification Needed",
+                status: "unverified",
+                classification: "Railway Emergency",
+                hours: "24/7",
+                address: "Empress Road, Railway HQ, Lahore",
+                altPhone: "042-99201700",
+                sector: "Government"
+            },
+            {
+                id: 3,
+                name: "KP Police — Emergency Response",
+                category: "POLICE",
+                categoryFull: "Police",
+                type: "GOVERNMENT",
+                phone: "15",
+                location: "All Peshawar, Peshawar, Khyber Pakhtunkhwa",
+                province: "Khyber Pakhtunkhwa",
+                city: "Peshawar",
+                source: "Source: Khyber Pakhtunkhwa Police Official Portal",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Emergency Response",
+                hours: "24/7",
+                address: "Central Police Office, Khyber Road, Peshawar",
+                altPhone: "091-9212222",
+                sector: "Government"
+            },
+            {
+                id: 4,
+                name: "Rescue 1122 — KP Emergency Service",
+                category: "AMBULANCE",
+                categoryFull: "Ambulance / Rescue",
+                type: "GOVERNMENT",
+                phone: "1122",
+                location: "All Peshawar, Peshawar, Khyber Pakhtunkhwa",
+                province: "Khyber Pakhtunkhwa",
+                city: "Peshawar",
+                source: "Source: KP Rescue 1122 Official Site",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Rescue & Medical",
+                hours: "24/7",
+                address: "Provincial HQ, Khyber Road, Peshawar",
+                altPhone: "091-9211222",
+                sector: "Government"
+            },
+            {
+                id: 5,
+                name: "Punjab Police Emergency",
+                category: "POLICE",
+                categoryFull: "Police",
+                type: "GOVERNMENT",
+                phone: "15",
+                location: "All Lahore, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Lahore Police / Punjab Police Official Portal",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Emergency Response",
+                hours: "24/7",
+                address: "Central Police Office, Old Anarkali, Lahore",
+                altPhone: "042-99210007",
+                sector: "Government"
+            },
+            {
+                id: 6,
+                name: "Rescue 1122 — Punjab Emergency Service",
+                category: "AMBULANCE",
+                categoryFull: "Ambulance / Rescue",
+                type: "GOVERNMENT",
+                phone: "1122",
+                location: "All Lahore, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Lahore Police Official Portal",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Emergency Rescue",
+                hours: "24/7",
+                address: "Emergency Services Academy, Thokar Niaz Baig, Lahore",
+                altPhone: "042-99232195",
+                sector: "Government"
+            },
+            {
+                id: 7,
+                name: "Lahore Fire Brigade",
+                category: "FIRE BRIGADE",
+                categoryFull: "Fire Brigade",
+                type: "GOVERNMENT",
+                phone: "16",
+                location: "All Lahore, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Lahore Metropolitan Corporation Official Portal",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Fire Emergency",
+                hours: "24/7",
+                address: "Central Fire Station, Shahrah-e-Quaid-e-Azam, Lahore",
+                altPhone: "042-99210000",
+                sector: "Government"
+            },
+            {
+                id: 8,
+                name: "Services Hospital Emergency",
+                category: "HOSPITAL",
+                categoryFull: "Government Hospitals",
+                type: "GOVERNMENT",
+                phone: "042-99203402",
+                location: "Jail Road, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Lahore Police Official Portal (hospital directory)",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Government Hospital",
+                hours: "24/7 Trauma Wards",
+                address: "Jail Road, Lahore",
+                altPhone: "042-99203427",
+                sector: "Government"
+            },
+            {
+                id: 9,
+                name: "Mayo Hospital Emergency",
+                category: "HOSPITAL",
+                categoryFull: "Government Hospitals",
+                type: "GOVERNMENT",
+                phone: "042-99211100",
+                location: "Old Anarkali, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Lahore Police Official Portal (hospital directory)",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Government Hospital",
+                hours: "24/7 Emergency",
+                address: "Nila Gumbad, Anarkali, Lahore",
+                altPhone: "042-99211101",
+                sector: "Government"
+            },
+            {
+                id: 10,
+                name: "Child Protection & Welfare Bureau",
+                category: "WOMEN & CHILD",
+                categoryFull: "Women & Child Protection",
+                type: "GOVERNMENT",
+                phone: "1121",
+                location: "All Punjab, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Punjab Commission on Status of Women",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Protection Helpline",
+                hours: "24/7",
+                address: "Thokar Niaz Baig, Multan Road, Lahore",
+                altPhone: "042-99232331",
+                sector: "Government"
+            },
+            {
+                id: 11,
+                name: "Punjab Women Helpline",
+                category: "WOMEN & CHILD",
+                categoryFull: "Women & Child Protection",
+                type: "GOVERNMENT",
+                phone: "1043",
+                location: "All Punjab, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Punjab Commission on Status of Women",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Women Helpline",
+                hours: "24/7",
+                address: "8-A Club Road, GOR 1, Lahore",
+                altPhone: "042-99203272",
+                sector: "Government"
+            },
+            {
+                id: 12,
+                name: "Provincial Disaster Management Authority",
+                category: "DISASTER RELIEF",
+                categoryFull: "Disaster Relief",
+                type: "GOVERNMENT",
+                phone: "1129",
+                location: "All Punjab, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Punjab Commission on Status of Women (referral listing)",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Disaster Management",
+                hours: "24/7 Control Room",
+                address: "10-A, Habibullah Road, Davis Road, Lahore",
+                altPhone: "042-99204408",
+                sector: "Government"
+            },
+            {
+                id: 13,
+                name: "Sindh Police Command Centre",
+                category: "POLICE",
+                categoryFull: "Police",
+                type: "GOVERNMENT",
+                phone: "15",
+                location: "All Karachi, Karachi, Sindh",
+                province: "Sindh",
+                city: "Karachi",
+                source: "Source: Sindh Police Official Site",
+                verified: "Verified: August 2026",
+                status: "verified",
+                classification: "Emergency Response",
+                hours: "24/7",
+                address: "Central Police Office, I.I. Chundrigar Road, Karachi",
+                altPhone: "021-99212652",
+                sector: "Government"
+            },
+            {
+                id: 14,
+                name: "Islamabad Capital Police",
+                category: "POLICE",
+                categoryFull: "Police",
+                type: "GOVERNMENT",
+                phone: "15",
+                location: "All Islamabad, Islamabad, Islamabad Capital Territory",
+                province: "Islamabad Capital Territory",
+                city: "Islamabad",
+                source: "Source: Islamabad Capital Police Official",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Police Helpline",
+                hours: "24/7 Safe City",
+                address: "Police Line HQ, Sector H-11, Islamabad",
+                altPhone: "051-9108020",
+                sector: "Government"
+            },
+            {
+                id: 15,
+                name: "Aga Khan University Hospital — Emergency Room",
+                category: "PRIVATE HOSPITAL",
+                categoryFull: "Private Hospitals",
+                type: "PRIVATE",
+                phone: "021-34868040",
+                location: "Stadium Road, Karachi, Sindh",
+                province: "Sindh",
+                city: "Karachi",
+                source: "Source: Aga Khan University Hospital Official Site",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Private Medical Emergency",
+                hours: "24/7 Emergency Room",
+                address: "National Stadium Road, Karachi",
+                altPhone: "021-111-911-911",
+                sector: "Private"
+            },
+            {
+                id: 16,
+                name: "Edhi Foundation — Ambulance Service",
+                category: "NGO RESPONSE",
+                categoryFull: "Private / NGO Ambulance",
+                type: "NGO",
+                phone: "115",
+                location: "All Karachi, Karachi, Sindh",
+                province: "Sindh",
+                city: "Karachi",
+                source: "Source: Widely reported nationwide number — not yet confirmed against Edhi Foundation's own official site by MADAD",
+                verified: "Verification Needed",
+                status: "unverified",
+                classification: "NGO Ambulance",
+                hours: "24/7",
+                address: "Sarafa Bazar, Bolton Market, Karachi",
+                altPhone: "021-32413232",
+                sector: "NGO"
+            },
+            {
+                id: 17,
+                name: "Chhipa Welfare Association — Ambulance Service",
+                category: "NGO RESPONSE",
+                categoryFull: "Private / NGO Ambulance",
+                type: "NGO",
+                phone: "1020",
+                location: "All Karachi, Karachi, Sindh",
+                province: "Sindh",
+                city: "Karachi",
+                source: "Source: Reported on secondary directories — not yet confirmed against Chhipa's own official site by MADAD",
+                verified: "Verification Needed",
+                status: "unverified",
+                classification: "NGO Rescue",
+                hours: "24/7",
+                address: "Plot 1, Main Shahrah-e-Faisal, Opp FTC, Karachi",
+                altPhone: "021-111-92-1020",
+                sector: "NGO"
+            },
+            {
+                id: 18,
+                name: "Sundas Foundation Blood Transfusion Centre",
+                category: "BLOOD BANK",
+                categoryFull: "Blood Banks",
+                type: "NGO",
+                phone: "042-37422111",
+                location: "Shadman, Lahore, Punjab",
+                province: "Punjab",
+                city: "Lahore",
+                source: "Source: Sundas Foundation Official Portal",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Blood Transfusion & Emergency",
+                hours: "24/7 Blood Supply",
+                address: "88-Shadman 1, Near Jail Road, Lahore",
+                altPhone: "042-37422112",
+                sector: "NGO"
+            },
+            {
+                id: 19,
+                name: "Fatimid Foundation Blood Bank",
+                category: "BLOOD BANK",
+                categoryFull: "Blood Banks",
+                type: "NGO",
+                phone: "021-32253323",
+                location: "Britto Road, Karachi, Sindh",
+                province: "Sindh",
+                city: "Karachi",
+                source: "Source: Fatimid Foundation Official Portal",
+                verified: "Verified: September 2026",
+                status: "verified",
+                classification: "Blood Bank Center",
+                hours: "24/7 Emergency Transfusion",
+                address: "393 Britto Road, Garden East, Karachi",
+                altPhone: "021-32220131",
+                sector: "NGO"
+            }
+        ];
+
+        // Mapping of Cities to Provinces
+        const cityMap = {
+            "Punjab": ["Lahore", "Rawalpindi", "Faisalabad", "Multan", "Gujranwala"],
+            "Khyber Pakhtunkhwa": ["Peshawar", "Mardan", "Abbottabad"],
+            "Sindh": ["Karachi", "Hyderabad", "Sukkur"],
+            "Balochistan": ["Quetta"],
+            "Islamabad Capital Territory": ["Islamabad"]
+        };
+
+        let currentLang = 'en';
+
+        // Dynamic Translation Dictionary
+        const translations = {
+            en: {
+                banner: '<strong class="text-brand-red font-bold">Important:</strong> MADAD is an independent directory. It is not a government website and cannot dispatch help — call the number shown directly.',
+                slogan: "Find the Right Help, When It Matters Most.",
+                subtext: "Verified emergency information from official sources.",
+                searchBtn: "SEARCH",
+                filterHeading: "FILTER BY LOCATION",
+                resetBtn: "Reset Filters",
+                directoryTitle: "Emergency Services Directory",
+                allProv: "All Provinces / Territories",
+                selectCity: "Select City",
+                allCat: "All Categories",
+                aboutTitle: "Serving Citizens Nationwide",
+                aboutDesc: "MADAD is a community-first civic initiative created to bridge the gap between citizens in distress and verified response hotlines, by centralising government, private and NGO emergency contacts across Pakistan into one fast, mobile-friendly directory."
+            },
+            ur: {
+                banner: '<strong class="text-brand-red font-bold">اہم اطلاع:</strong> مدد ایک آزاد ڈائریکٹری ہے۔ یہ سرکاری ویب سائٹ نہیں ہے اور ایمرجنسی بھیج نہیں سکتی — دکھائے گئے نمبر پر براہ راست کال کریں۔',
+                slogan: "صحیح مدد تلاش کریں، جب اس کی سب سے زیادہ ضرورت ہو۔",
+                subtext: "سرکاری ذرائع سے تصدیق شدہ ہنگامی معلومات۔",
+                searchBtn: "تلاش کریں",
+                filterHeading: "مقام اور زمرے کی بنیاد پر فلٹر کریں",
+                resetBtn: "ری سیٹ کریں",
+                directoryTitle: "ایمرجنسی سروسز ڈائریکٹری",
+                allProv: "تمام صوبے / علاقے",
+                selectCity: "شہر منتخب کریں",
+                allCat: "تمام زمرے",
+                aboutTitle: "ملک بھر کے شہریوں کی خدمت",
+                aboutDesc: "مدد ایک قومی شہری پہل ہے جس کا مقصد مصیبت میں گھِرے شہریوں کو سرکاری، نجی اور این جی او کے تصدیق شدہ ایمرجنسی نمبرز تک فوری رسائی فراہم کرنا ہے۔"
+            },
+            sd: {
+                banner: '<strong class="text-brand-red font-bold">اهم اطلاع:</strong> مدد هڪ آزاد ڊائريڪٽري آهي. هي سرڪاري ويب سائيٽ ناهي — ڏيکاريل نمبر تي سڌو ڪال ڪريو.',
+                slogan: "صحيح مدد ڳوليو، جڏهن ان جي سڀ کان وڌيڪ ضرورت هجي.",
+                subtext: "سرڪاري ذريعن کان تصديق ٿيل هنگامي معلومات.",
+                searchBtn: "ڳوليو",
+                filterHeading: "جڳھ ۽ زمري جي بنياد تي فلٽر ڪريو",
+                resetBtn: "ري سيٽ ڪريو",
+                directoryTitle: "ايمرجنسي سروسز ڊائريڪٽري",
+                allProv: "سڀئي صوبا / علائقا",
+                selectCity: "شهر چونڊيو",
+                allCat: "سڀئي زمرا",
+                aboutTitle: "سڄي ملڪ جي شهرين جي خدمت",
+                aboutDesc: "مدد هڪ قومي تحريڪ آهي جنهن جو مقصد ڏک ۾ گھريل شهرين کي تصديق ٿيل ايمرجنسي نمبرن تائين فوري رسائي فراهم ڪرڻ آهي."
+            }
+        };
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            document.documentElement.classList.toggle('light');
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('btn-en').className = lang === 'en' ? "px-2.5 py-0.5 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all" : "px-2.5 py-0.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all";
+            document.getElementById('btn-ur').className = lang === 'ur' ? "px-2.5 py-0.5 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all font-urdu" : "px-2.5 py-0.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all font-urdu";
+            document.getElementById('btn-sd').className = lang === 'sd' ? "px-2.5 py-0.5 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all" : "px-2.5 py-0.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all";
+
+            const t = translations[lang];
+            document.getElementById('bannerText').innerHTML = t.banner;
+
+            const sloganEl = document.getElementById('heroSlogan');
+            sloganEl.textContent = t.slogan;
+            if (lang === 'ur') sloganEl.className = "text-lg md:text-2xl font-bold text-brand-red mb-1 tracking-wide font-urdu";
+            else sloganEl.className = "text-lg md:text-2xl font-black text-brand-red mb-1 tracking-wide";
+
+            document.getElementById('heroSubtext').textContent = t.subtext;
+            document.getElementById('btnSearch').textContent = t.searchBtn;
+            document.getElementById('lblFilterHeading').textContent = t.filterHeading;
+            document.getElementById('headingDirectory').textContent = t.directoryTitle;
+            document.getElementById('optAllProv').textContent = t.allProv;
+            document.getElementById('optSelectCity').textContent = t.selectCity;
+            document.getElementById('optAllCat').textContent = t.allCat;
+            document.getElementById('headingServing').textContent = t.aboutTitle;
+            document.getElementById('txtAboutDesc').textContent = t.aboutDesc;
+        }
+
+        function onProvinceChange() {
+            const prov = document.getElementById("provinceSelect").value;
+            const citySelect = document.getElementById("citySelect");
+            citySelect.innerHTML = `<option value="">${translations[currentLang].selectCity}</option>`;
+
+            if (!prov) {
+                citySelect.disabled = true;
+            } else {
+                citySelect.disabled = false;
+                const cities = cityMap[prov] || [];
+                cities.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c;
+                    opt.textContent = c;
+                    citySelect.appendChild(opt);
+                });
+            }
+            applyFilters();
+        }
+
+        function filterByProvince(prov) {
+            document.getElementById("provinceSelect").value = prov;
+            onProvinceChange();
+        }
+
+        function filterByCategory(cat) {
+            document.getElementById("categorySelect").value = cat;
+            applyFilters();
+        }
+        function goHome() {
+
+            document.getElementById("searchInput").value = "";
+            document.getElementById("provinceSelect").value = "";
+            document.getElementById("categorySelect").value = "";
+
+            const citySelect = document.getElementById("citySelect");
+
+            citySelect.innerHTML =
+                '<option value="">Select City</option>';
+
+            citySelect.disabled = true;
+
+            renderGrid(dataset);
+
+            document.getElementById("resultCounter").textContent =
+                dataset.length + " Available";
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+        function resetFilters() {
+            document.getElementById("searchInput").value = "";
+            document.getElementById("provinceSelect").value = "";
+            document.getElementById("categorySelect").value = "";
+            const citySelect = document.getElementById("citySelect");
+            citySelect.innerHTML = `<option value="">${translations[currentLang].selectCity}</option>`;
+            citySelect.disabled = true;
+            applyFilters();
+        }
+
+        function openDetailsModal(id) {
+            const item = dataset.find(x => x.id === id);
+            if (!item) return;
+
+            document.getElementById("modalTitle").textContent = item.name;
+            document.getElementById("modalLocation").textContent = item.location;
+            document.getElementById("modalClassification").textContent = item.classification || "Emergency";
+            document.getElementById("modalHours").textContent = item.hours || "24/7";
+            document.getElementById("modalAddress").textContent = item.address || item.location;
+            document.getElementById("modalAlt").textContent = item.altPhone || item.phone;
+            document.getElementById("modalSector").textContent = item.sector || item.type;
+
+            const callBtn = document.getElementById("modalCallBtn");
+            callBtn.href = `tel:${item.phone}`;
+            callBtn.textContent = `Call ${item.phone}`;
+
+            const modal = document.getElementById("detailsModal");
+            modal.classList.remove("hidden");
+        }
+
+        function closeDetailsModal() {
+            document.getElementById("detailsModal").classList.add("hidden");
+        }
+
+        function toggleInfoModal() {
+            document.getElementById("infoModal").classList.toggle("hidden");
+        }
+
+
+        function reportNumber() {
+            alert("Thank you for flagging this entry. Our verification team will double-check with official sources.");
+        }
+
+        function applyFilters() {
+            const search = document.getElementById("searchInput").value.toLowerCase().trim();
+            const province = document.getElementById("provinceSelect").value;
+            const city = document.getElementById("citySelect").value;
+            const category = document.getElementById("categorySelect").value;
+
+            const filtered = dataset.filter(item => {
+                const matchSearch = !search ||
+                    item.name.toLowerCase().includes(search) ||
+                    item.phone.includes(search) ||
+                    item.category.toLowerCase().includes(search) ||
+                    item.city.toLowerCase().includes(search);
+
+                const matchProvince = !province || item.province === province;
+                const matchCity = !city || item.city === city;
+                const matchCategory = !category || item.categoryFull === category || item.category === category;
+
+                return matchSearch && matchProvince && matchCity && matchCategory;
+            });
+
+            renderGrid(filtered);
+        }
+
+        function renderGrid(items) {
+            const container = document.getElementById("servicesContainer");
+            const counter = document.getElementById("resultCounter");
+            counter.textContent = `${items.length} Available`;
+            container.innerHTML = "";
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 px-4 text-center bg-white dark:bg-brand-darkCard rounded-2xl border border-slate-200 dark:border-brand-darkBorder shadow-sm">
+                        <div class="w-12 h-12 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <span class="inline-block px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 font-extrabold text-[10px] rounded-full tracking-wider uppercase mb-2">
+                            COMING SOON
+                        </span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">No Verified Entries for This Selection Yet</h3>
+                        <p class="text-xs text-slate-500 max-w-md mx-auto mt-1">
+                            MADAD only lists emergency numbers that have been directly verified with official sources. Coverage for this location/category is coming soon.
+                        </p>
+                        <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-brand-red text-white text-xs font-bold rounded-xl shadow-md hover:bg-brand-redHover transition-colors">
+                            Reset Filters
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // EXACT PIXEL PERFECT DUPLICATE OF SCREENSHOT CARDS
+            items.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "bg-white dark:bg-brand-darkCard rounded-2xl p-5 border border-slate-200/90 dark:border-brand-darkBorder transition-all flex flex-col justify-between relative shadow-sm hover:shadow-md";
+
+                const isVerified = item.status === "verified";
+
+                card.innerHTML = `
+                    <div>
+                        <!-- Header Row Badges (Exact match to screenshot) -->
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-brand-red font-black text-[11px] tracking-wide uppercase">
+                                    ${item.category}
+                                </span>
+                                <span class="px-2 py-0.5 rounded-md bg-slate-900 dark:bg-slate-800 text-white font-extrabold text-[9px] tracking-wider uppercase">
+                                    ${item.type}
+                                </span>
+                            </div>
+
+                            <div class="text-right flex-shrink-0">
+                                <span class="px-2.5 py-1 rounded-lg ${isVerified ? 'bg-brand-greenBg text-brand-greenText border border-brand-greenBorder' : 'bg-[#fff7ed] text-[#b45309] border border-[#fef3c7]'} font-bold text-[10px] block leading-tight text-center">
+                                    ${isVerified ? 'Verified' : 'Verification<br>Needed'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Service Title -->
+                        <h3 class="text-base font-black text-slate-900 dark:text-white leading-snug mb-0.5">
+                            ${item.name}
+                        </h3>
+
+                        <!-- Location Subtitle -->
+                        <p class="text-xs font-medium text-slate-400 dark:text-slate-400 mb-4">
+                            ${item.location}
+                        </p>
+
+                        <!-- Primary Helpline Box (Exact grey container) -->
+                        <div class="bg-[#f8fafc] dark:bg-brand-darkBg border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3.5 mb-3 flex items-center justify-between">
+                            <div>
+                                <span class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 block mb-0.5">
+                                    PRIMARY HELPLINE
+                                </span>
+                                <span class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
+                                    ${item.phone}
+                                </span>
+                            </div>
+
+                            <a href="tel:${item.phone}" class="bg-brand-red hover:bg-brand-redHover text-white font-extrabold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center shadow-md shadow-brand-red/10">
+                                Call Now
+                            </a>
+                        </div>
+
+                        <!-- Source Line -->
+                        <div class="text-[10px] text-slate-400 dark:text-slate-400 leading-tight mb-4">
+                            ${item.source}
+                        </div>
+                    </div>
+
+                    <!-- Footer Actions -->
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        <button onclick="openDetailsModal(${item.id})" class="text-slate-700 dark:text-slate-200 hover:text-brand-red dark:hover:text-brand-red transition-colors font-extrabold">
+                            Details
+                        </button>
+
+                        <button onclick="reportNumber()" class="text-slate-400 hover:text-brand-red transition-colors text-[11px] font-medium">
+                            Report incorrect number
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Modal Click Outside Listener
+        window.onclick = function (e) {
+            const detailsModal = document.getElementById("detailsModal");
+            const infoModal = document.getElementById("infoModal");
+            if (e.target === detailsModal) closeDetailsModal();
+            if (e.target === infoModal) toggleInfoModal();
+        };
+
+
+        // On Page Load Initialization
+        window.addEventListener("DOMContentLoaded", () => {
+
+            renderGrid(dataset);
+
+            document.getElementById("resultCounter").textContent =
+                dataset.length + " Available";
+
+        });
+    </script>
+</body>
+
+</html>
